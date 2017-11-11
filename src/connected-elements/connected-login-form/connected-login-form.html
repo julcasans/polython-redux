@@ -1,0 +1,37 @@
+<link rel="import" href="../../elements/login-form/login-form.html">
+<link rel="import" href="../../redux-store.html"
+
+<dom-module id="connected-login-form">
+  <template>
+    <login-form></login-form>
+  </template>
+
+  <script>
+    class ConnectedLoginForm extends ReduxMixin(LoginForm) {
+      static get is() { return "connected-login-form"; }
+
+      static get properties() {
+        return {
+          loginResult: {
+            type: String,
+            statePath: 'loginResult'
+          },
+
+          error: {
+            type: String,
+            statePath: 'error'
+          }          
+        }
+      }
+
+      ready() {
+        super.ready();
+        this.addEventListener('login-requested', (event) => {
+          this.dispatch({type: 'DO_LOGIN', detail: event.detail});
+        });
+      }
+    }
+
+    customElements.define(ConnectedLoginForm.is, ConnectedLoginForm);
+  </script>
+</dom-module>

@@ -1,0 +1,6 @@
+{
+  "name": "polython-redux",
+  "short_name": "polython-redux",
+  "start_url": "/",
+  "display": "standalone"
+}

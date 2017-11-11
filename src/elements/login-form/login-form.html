@@ -1,0 +1,63 @@
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-spinner/paper-spinner.html">
+
+<dom-module id="login-form">
+  <template>
+    <style></style>
+    <paper-input id="username" always-float-label label="Username" on-value-changed="_checkValidData" required></paper-input>
+    <paper-input id="password" always-float-label label="Password" on-value-changed="_checkValidData" required type="password"></paper-input>
+    <paper-button raised on-tap="doLogin" disabled=[[!canSubmit]]>Login</paper-button>
+    <paper-spinner id="spinner" active=[[waiting]]></paper-spinner>
+  </template>
+  <script>
+    class LoginForm extends Polymer.Element {
+      static get is() {return 'login-form'; }
+
+      static get properties() {
+        return {
+          waiting: {
+            type: Boolean,
+            computed: '_isWaiting(loginResult)'
+          },
+
+          canSubmit: {
+            value: false,
+            type: Boolean
+          },
+
+          loginResult: {
+            type: String
+          },
+
+          error: {
+            type: String
+          }            
+        }
+      }
+
+      _checkValidData() {        
+        const username = this.$.username.value;
+        const password = this.$.password.value;
+        this.canSubmit = username && password && username.trim().length>0 && password.trim().length>0;
+      }
+
+      _isWaiting(loginResult) {
+        return loginResult === 'pending';
+      }
+
+      doLogin() {
+        const userCredentials = {
+          username: this.$.username.value,
+          password: this.$.password.value
+        };
+
+        this.waiting = true;
+        this.canSubmit = false;
+        this.dispatchEvent(new CustomEvent('login-requested', {detail: userCredentials}));
+      }
+    }
+
+    customElements.define(LoginForm.is, LoginForm);
+  </script>
+</dom-module>

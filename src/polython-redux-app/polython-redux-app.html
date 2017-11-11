@@ -1,0 +1,58 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../connected-elements/connected-login-form/connected-login-form.html">
+<link rel="import" href="../connected-elements/connected-login-dm/connected-login-dm.html">
+
+<dom-module id="polython-redux-app">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <iron-pages selected="[[currentPage]]">
+      <div >
+        <connected-login-form></connected-login-form>
+        <connected-login-dm></connected-login-dm>
+        <paper-toast id="toast" opened="[[hasInvalidCredentials]]" duration="2000" text="Invalid user or password" vertical-align="top" vertical-offset="115"  ></paper-toast>
+      </div>
+      <div>
+        <h2>Hello Polython!</h2>
+      </div>      
+    </iron-pages>
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class PolythonReduxApp extends ReduxMixin(Polymer.Element) {
+      static get is() { return 'polython-redux-app'; }
+      static get properties() {
+        return {
+          currentPage: {
+            type: 'Numeric',
+            value: 0,
+            statePath: 'page'
+          },
+          loginStatus: {
+            type: 'String',
+            value: '',
+            statePath: 'loginResult'
+          },
+          hasInvalidCredentials: {
+            type: 'Boolean',
+            computed: '_checkLoginStatus(loginStatus)'
+          }
+        };
+      }
+      _checkLoginStatus(loginStatus) {
+        return loginStatus === 'error';
+      }
+    }
+
+    window.customElements.define(PolythonReduxApp.is, PolythonReduxApp);
+  </script>
+</dom-module>

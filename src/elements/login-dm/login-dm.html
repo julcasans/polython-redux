@@ -1,0 +1,53 @@
+<dom-module id="login-dm">
+
+  <script>
+    class LoginDM extends Polymer.Element {
+      static get is() { return 'login-dm'; }
+      
+      static get properties() {
+        return {
+          username: {
+            type: 'String'
+          },
+          password: {
+            type: 'String'
+          }
+        }
+      }
+    
+      static get observers() {
+        return ['_gotNewCredentials(username, password)']
+      }
+
+      _gotNewCredentials(username, password) {
+        if (this.username && this.password) {
+          this.validateUser();
+        }
+      }
+
+      validateUser() {
+        this.dispatchEvent(new CustomEvent('login-request-started', {username: this.username}));
+        setTimeout( () => {
+          let authorized = this.username === 'polython' && this.password === '1234';
+          if (authorized) {
+            this.dispatchEvent(new CustomEvent('login-request-success', 
+            {
+              detail: { 
+                user: {
+                  username: 'polython',
+                  name: 'José',
+                  surname: 'Gómez Robles',
+                  points: 2890
+                }
+              }
+            }));
+          } else {
+            this.dispatchEvent(new CustomEvent('login-request-error', {error: 'Invalid credentials'}));
+          }
+        }, 3000);
+      }
+    }
+    
+    customElements.define(LoginDM.is, LoginDM);
+  </script>
+</dom-module>

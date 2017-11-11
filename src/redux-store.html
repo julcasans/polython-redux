@@ -1,0 +1,62 @@
+<link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
+
+<script>
+  const initialState = {
+    cart: {
+      items: []
+    },
+    error: undefined,
+    loginResult: undefined,
+    page: 0,
+    products: [],
+    user: {
+      username: undefined,
+      password: undefined,
+      logged: false,
+      points: 0
+    }
+  };
+
+  const reducer = (state, action) => {
+    if (!state) return initialState;
+    switch(action.type) {
+      case 'DO_LOGIN':
+        return Object.assign({}, state, {
+          user: {
+            username: action.detail.username,
+            password: action.detail.password,
+            logged: false,
+            points: 0
+          },
+          loginResult: 'pending'
+        });
+      case 'NOTIFY_LOGIN_SUCCESS':
+      const newState =  Object.assign({}, state,
+        { 
+          loginResult: 'success',
+        });
+        newState.user.logged = true,
+        newState.user.points = action.detail.user.points;
+        return newState;
+      case 'NOTIFY_LOGIN_ERROR':
+      return Object.assign({}, state,
+        { 
+          user: {
+            username: undefined,
+            password: undefined,
+            logged: false,
+            points: 0
+          },
+          loginResult: 'error',
+          error: action.detail 
+        });
+      case 'NAVIGATE':
+        return Object.assign({}, state, { page: action.detail.page });
+    };
+  }
+
+  const store = Redux.createStore(reducer,  
+      window.__REDUX_DEVTOOLS_EXTENSION__ && 
+      window.__REDUX_DEVTOOLS_EXTENSION__());
+  const ReduxMixin = PolymerRedux(store);
+</script>
